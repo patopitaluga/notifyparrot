@@ -1,8 +1,8 @@
 #  NotifyParrot
 
-Receive voice messages in real time in your browser when your web deploy process ends, when your testing script ends, when your preprocessor ends, when your Arduino gadgets detect something, or whenever you can imagine.
+**NotifyParrot** is a node service that creates a web page that turns POST requests into spoken voice messages.
 
-**NotifyParrot** creates a web page that receives POST requests and transform them into spoken voice messages.
+Receive voice messages in real time in your browser when your web deploy process ends, when your testing script ends, when your preprocessor ends, when your Arduino gadgets detect something, or whenever you can imagine.
 
 **NotifyParrot requires the Google Cloud Text‑to‑Speech service. You'll need a json file with your Google Cloud service [account key](https://cloud.google.com/docs/authentication/getting-started).**
 
