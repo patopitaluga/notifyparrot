@@ -7,9 +7,9 @@ Receive voice messages in real time in your browser when your web deploy process
 **NotifyParrot requires the Google Cloud Text‑to‑Speech service. You'll need a json file with your Google Cloud service [account key](https://cloud.google.com/docs/authentication/getting-started).**
 
 ## Setup
-* Install the package
+* Clone the package
   ```
-  npm install -g git+https://git@github.com/patopitaluga/notifyparrot.git
+  git clone https://github.com/patopitaluga/notifyparrot.git
   ```
 * Copy your Text-to-speech Google Cloud service account key json file into the *creds* folder.
 
