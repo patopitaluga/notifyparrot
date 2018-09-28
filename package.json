@@ -1,0 +1,24 @@
+{
+  "name": "notifyparrot",
+  "version": "1.0.0",
+  "description": "Web server that turns POST request into spoken voice notifications.",
+  "main": "app/server.js",
+  "scripts": {
+    "setup": "node app/setup.js",
+    "start": "node app/server.js"
+  },
+  "keywords": [],
+  "author": "Patricio Pitaluga <patricio.pitaluga@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^0.3.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "js-sha256": "^0.9.0",
+    "jsonwebtoken": "^8.3.0",
+    "prompt-sync": "^4.1.6",
+    "socket.io": "^2.1.1"
+  }
+}

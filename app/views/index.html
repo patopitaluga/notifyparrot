@@ -1,0 +1,185 @@
+<html>
+<head>
+  <title>NotifyParrot</title>
+  <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png"/>
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png"/>
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png"/>
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png"/>
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png"/>
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png"/>
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png"/>
+  <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="msapplication-TileColor" content="#ffffff"/>
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <style type="text/css">
+    body {
+      background: #ececec;
+      color: #333;
+      font-family: Helvetica Neue, 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    div, header {
+      box-sizing: border-box;
+    }
+    #header {
+      align-items: center;
+      background: #f7f7f7;
+      box-shadow: 0 2px 1px 0 rgba(102, 93, 93, .15);
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+    }
+    #header figure {
+      overflow: hidden;
+      border-radius: 5px;
+    }
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    button {
+      background-color: #7fb959;
+      border-radius: 3px;
+      border-style: solid;
+      border-width: 1px;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-block;
+      font-size: 15px;
+      margin: 0 10px;
+      padding: 6px 11px;
+    }
+  </style>
+</head>
+<body>
+  <header id="header">
+    <div style="margin-right: auto; width: 300px; text-align: left;">
+      <figure style="margin: 0 15px 0 0; display: inline;">
+        <img src="/apple-icon-57x57.png" alt="" style="vertical-align: middle;"/>
+      </figure>
+      <h1 style="font-size: 17px; display: inline;">NotifyParrot</h1>
+    </div>
+
+    <div style="margin-left: auto;">
+      <button onclick="generateNotif();" style="cursor: pointer;">Generate notification</button>
+    </div>
+  </header>
+  <small style="position: absolute; bottom: 7px; left: 0; width: 100%;">Author patricio.pitaluga@gmail.com. Photo by Shannon Kunkle on Unsplash</small>
+
+  <button onclick="
+    this.style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('generateNotif').style.display = 'none';
+    " style="cursor: pointer; margin: 35px auto; font-size: 22px;">Click to start</button>
+  <div id="content" class="container" style="display: none;">
+    <div style="text-align: left;">
+      <p>Status: <strong style="color: #7fb959;">listening</strong>.</p>
+
+<pre id="output" style="padding: 20px 20px;background: #fff;max-width: 100%;">
+Notifications:
+</pre>
+    </div>
+  </div>
+
+  <div id="generateNotif" style="display: none;text-align: left;">
+    <div class="container" style="background: #fff; padding: 10px;">
+      <table style="border-collapse: collapse; width: 100%;">
+        <tr>
+          <td style="width: 1%; padding: 10px;">Token:</td>
+          <td><input id="token" style="width: 100%;" onClick="this.select();"/></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="width: 1%; padding: 10px;">Code: (Node)</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <textarea id="codeNode" style="width: 100%; height: 80px;" onClick="this.select();"></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    function addZero(i) {
+      if (i < 10) i = "0" + i;
+      return i;
+    }
+
+    /* global io */
+    var socket = io('/');
+    socket.on('notify', function(data) {
+      var audio = new Audio('/audios/' + data.audiofile);
+
+      var d = new Date();
+      document.getElementById('output').innerHTML += addZero(d.getHours()) + ':' + addZero(d.getMinutes()) + ' ' + data.message + '<br/>' + "\n";
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play();
+    });
+
+    var token = '';
+    function generateNotif() {
+      document.getElementById('generateNotif').style.display = 'block';
+
+      var xhrGetJWT = new XMLHttpRequest();
+      xhrGetJWT.open('POST', '/getjwt', true);
+      xhrGetJWT.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhrGetJWT.onload = function() {
+        var jsonResponse = JSON.parse(xhrGetJWT.response);
+        token = jsonResponse.token;
+        document.getElementById('token').value = token;
+        var serverUrl = window.location.href.replace('http://', '').replace('https://', '');
+        if (serverUrl.slice(-1) === '/') serverUrl = serverUrl.substr(0, serverUrl.length - 1);
+        let serverPort = 80;
+        if (serverUrl.indexOf(':') > -1) {
+          serverPort = serverUrl.substr(serverUrl.lastIndexOf(':') + 1);
+          serverUrl = serverUrl.substr(0, serverUrl.indexOf(':'));
+        }
+        document.getElementById('codeNode').value =
+'const http = require(\'http\');\n' +
+'const querystring = require(\'querystring\');\n' +
+'\n' +
+'let message = \'Hello, this is your message.\';\n' +
+'\n' +
+'let postData = querystring.stringify({\n' +
+'  message: message\n' +
+'});\n' +
+'\n' +
+'let req = http.request({\n' +
+'  hostname: \'' + serverUrl + '\',\n' +
+'  port: ' + serverPort + ',\n' +
+'  path: \'/notify\',\n' +
+'  method: \'POST\',\n' +
+'  headers: {\n' +
+'    \'Content-Type\': \'application/x-www-form-urlencoded\',\n' +
+'    \'Content-Length\': postData.length,\n' +
+'    \'Authorization\': \'Bearer ' + token + '\'\n' +
+'  }\n' +
+'}, function (res) {\n' +
+'  console.log(\'NotifyParrot: \' + message);\n' +
+'});\n' +
+'\n' +
+'req.on(\'error\', function (e) {\n' +
+'});\n' +
+'\n' +
+'req.write(postData);\n' +
+'req.end();\n';
+      };
+      xhrGetJWT.send();
+    }
+  </script>
+</body>
+</html>
