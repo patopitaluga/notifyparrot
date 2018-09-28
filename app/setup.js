@@ -20,9 +20,6 @@ fs.readdir(path.join(__dirname, '../creds'), (err, files) => {
 function startPromt() {
   let jsonAccountKey = prompt('Text-to-speech Google Cloud service account key json file? (' + isThereAJsonFile + ') ', isThereAJsonFile);
   let portInput = prompt('Which port should the NotifyParrot web server use? (3000) ', 3000);
-  let urlInput = prompt('Which url will NotifyParrot web server use? (http://localhost) ', 'http://localhost');
-
-  if (urlInput.slice(-1) === '/') urlInput = urlInput.substr(0, urlInput.length - 1);
 
   let secretGenerated = '';
   let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -31,7 +28,6 @@ function startPromt() {
 
   let doyEnvText = `PORT=${portInput}
 SECRET=${secretGenerated}
-URL=${urlInput}
 GOOGLE_APPLICATION_CREDENTIALS="creds/${isThereAJsonFile}"
 `;
 

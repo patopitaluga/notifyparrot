@@ -1,1 +1,7 @@
 Don't delete this file. Git will ignore empty folders.
+
+Copy here your Text-to-speech Google Cloud service account key json file.
+
+Get it following these instructions https://cloud.google.com/docs/authentication/getting-started and copy it into the creds folder.
+
+Then run: npm run setup

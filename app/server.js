@@ -16,6 +16,13 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 const client = new textToSpeech.TextToSpeechClient();
 const cors = require('cors');
 
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.log('NotifyParrot requires a Text-to-speech Google Cloud service account key json file.');
+  console.log('Get it following these instructions https://cloud.google.com/docs/authentication/getting-started and copy it into the creds folder.');
+  console.log('Then run: npm run setup');
+  process.exit();
+}
+
 app.use(cors());
 
 const bodyParser = require('body-parser');
@@ -100,4 +107,50 @@ app.post('/notify', function (req, res) {
 });
 
 io.on('connection', function(socket) {
+});
+
+app.get('/getnotificationfile', (req, res) => {
+  let serverUrl = req.get('host') + req.originalUrl;
+  if (serverUrl.slice(-1) === '/') serverUrl = serverUrl.substr(0, serverUrl.length - 1);
+  let serverPort = 80;
+  if (serverUrl.indexOf(':') > -1) {
+    serverPort = serverUrl.substr(serverUrl.lastIndexOf(':') + 1);
+    serverPort = serverPort.substr(0, serverPort.indexOf('/'));
+    serverUrl = serverUrl.substr(0, serverUrl.indexOf(':'));
+  }
+
+  let codeStr =
+  'const http = require(\'http\');\n' +
+  'const querystring = require(\'querystring\');\n' +
+  '\n' +
+  'let message = \'Hello, this is your message.\';\n' +
+  '\n' +
+  'let postData = querystring.stringify({\n' +
+  '  message: message\n' +
+  '});\n' +
+  '\n' +
+  'let req = http.request({\n' +
+  '  hostname: \'' + serverUrl + '\',\n' +
+  '  port: ' + serverPort + ',\n' +
+  '  path: \'/notify\',\n' +
+  '  method: \'POST\',\n' +
+  '  headers: {\n' +
+  '    \'Content-Type\': \'application/x-www-form-urlencoded\',\n' +
+  '    \'Content-Length\': postData.length,\n' +
+  '    \'Authorization\': \'Bearer ' + req.query.jwt + '\'\n' +
+  '  }\n' +
+  '}, function (res) {\n' +
+  '  console.log(\'NotifyParrot: \' + message);\n' +
+  '});\n' +
+  '\n' +
+  'req.on(\'error\', function (e) {\n' +
+  '});\n' +
+  '\n' +
+  'req.write(postData);\n' +
+  'req.end();\n';
+
+  res.set('Content-Type', 'application/javascript');
+  res.set('Content-Disposition', 'attachment; filename=notifyparrotmessage.js');
+
+  res.send(codeStr);
 });

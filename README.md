@@ -4,7 +4,9 @@
 
 Receive voice messages in real time in your browser when your web deploy process ends, when your testing script ends, when your preprocessor ends, when your Arduino gadgets detect something, or whenever you can imagine.
 
-**NotifyParrot requires the Google Cloud Text‑to‑Speech service. You'll need a json file with your Google Cloud service [account key](https://cloud.google.com/docs/authentication/getting-started).**
+### Prerequisites
+
+**NotifyParrot** requires the Google Cloud Text‑to‑Speech service. You'll need a json file with your Google Cloud service [account key](https://cloud.google.com/docs/authentication/getting-started).**
 
 ## Setup
 * Clone the package
@@ -24,3 +26,16 @@ Receive voice messages in real time in your browser when your web deploy process
   npm run start
   ```
 * Open the created web server in your browser. Follow the instructions to create the POST request with your messages.
+
+## Security
+
+**NotifyParrot** will generate a unique *secret* and will provide a json web token
+
+## Options
+
+In yout POST request you can set a *message*, and message with different *phonetics* and chose the *lang* in which the message will be spoken.
+
+-----------------------
+
+Created by: https://github.com/patopitaluga patricio.pitaluga@gmail.com License ISC: Use, copy, modify, and/or distribute this software for any
+purpose with or without fee; provided "as is" without warranties; I'm not responsable for damages caused by the use of this software. 2018.
