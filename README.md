@@ -29,7 +29,7 @@ Receive voice messages in real time in your browser when your web deploy process
 
 ## Security
 
-**NotifyParrot** will generate a unique *secret* and will provide a json web token
+**NotifyParrot** will generate a unique *secret* and will provide a json web token to use in every POST request.
 
 ## Options
 
