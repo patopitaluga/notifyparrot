@@ -71,6 +71,7 @@ app.post('/notify', function (req, res) {
       res.status(401).send({
         error: 'Invalid token.'
       });
+      console.log('Invalid token.');
     } else {
       let audiofile = sha256(req.body.message + (req.body.phonetics || ''));
       audiofile = audiofile.substr(0, 12);
