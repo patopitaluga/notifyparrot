@@ -30,7 +30,11 @@
     </div>
 
     <div style="margin-left: auto;">
-      <button class="btn" onclick="generateNotif();" style="cursor: pointer;">Generate token</button>
+      <button class="btn" style="cursor: pointer;" onclick="
+        document.body.classList.remove('body--untouched');
+        document.getElementById('generate-notif').classList.remove('generate-notif--hidden');
+        document.getElementById('message-input').focus();
+        ">Generate token</button>
     </div>
   </header>
 
@@ -46,14 +50,43 @@
         </tr>
         <tr>
           <td style="width: 1%; padding: 5px 10px 5px 0;">Message:</td>
-          <td><input id="message-input" style="width: 100%;" type="text" onkeyup="updateScriptTextarea(this.value, document.getElementById('lang').value); document.getElementById('test-button').style.display = (this.value !== '') ? 'inline' : 'none';"/></td>
+          <td><input id="message-input" style="width: 100%;" type="text" onkeyup="
+              updateScriptTextarea(
+                document.getElementById('message-input').value,
+                document.getElementById('lang').value,
+                document.getElementById('expiresInSelect').value
+              );
+              document.getElementById('test-button').style.display = (this.value !== '') ? 'inline' : 'none';
+            "/></td>
         </tr>
         <tr>
           <td style="width: 1%; padding: 5px 10px 5px 0;">Language:</td>
           <td>
-            <select id="lang" onchange="updateScriptTextarea(document.getElementById('message-input').value, this.value)">
+            <select id="lang" onchange="
+              updateScriptTextarea(
+                document.getElementById('message-input').value,
+                document.getElementById('lang').value,
+                document.getElementById('expiresInSelect').value
+              )">
               <option value="en-US">en-US</option>
               <option value="es-ES">es-ES</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 1%; padding: 5px 10px 5px 0;">Expires in:</td>
+          <td>
+            <select id="expiresInSelect" onchange="
+              updateScriptTextarea(
+                document.getElementById('message-input').value,
+                document.getElementById('lang').value,
+                document.getElementById('expiresInSelect').value
+              );
+              getNewToken(document.getElementById('expiresInSelect').value);
+              ">
+              <option value="1 year">1 year</option>
+              <option value="1 week">1 week</option>
+              <option value="1 day">1 day</option>
             </select>
           </td>
         </tr>
@@ -61,13 +94,13 @@
           <td colspan="2" style="width: 1%; padding: 5px 10px 5px 0;">Code: (Node)</td>
         </tr>
         <tr>
-          <td colspan="2" style="padding: 5px 0;overflow: hidden;">
+          <td colspan="2" style="padding: 15px 0 0;overflow: hidden;">
             <textarea id="codeNode" style="width: 100%; height: 80px;" onClick="this.select();" readonly="readonly"></textarea>
           </td>
         </tr>
       </table>
       <div style="text-align: center;margin-top: 10px;">
-        <button class="btn" onclick="window.location.href='/getnotificationfile?message=' + document.getElementById('message-input').value + '&lang=' + document.getElementById('lang').value + '&jwt=' + token">Download as file</button>
+        <button class="btn" onclick="window.location.href='/getnotificationfile?message=' + document.getElementById('message-input').value + '&lang=' + document.getElementById('lang').value + '&expiresIn=' + document.getElementById('expiresInSelect').value + '&jwt=' + token">Download as file</button>
         <button class="btn" id="test-button" onclick="
           var testMessage = document.getElementById('message-input').value;
           if (testMessage === '') testMessage = '';
@@ -75,7 +108,15 @@
           xmlHttp.open('POST', '/notify', true);
           xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
           xmlHttp.setRequestHeader('Authorization', 'Bearer ' + token);
+          xmlHttp.addEventListener('load', XHRLoadHandler);
+          xmlHttp.addEventListener('error', XHRErrorHandler);
           xmlHttp.send('message=' + testMessage + '&lang=' + document.getElementById('lang').value);
+          function XHRLoadHandler(event) {
+            console.log(event);
+          }
+          function XHRErrorHandler(event) {
+            console.log('Error');
+          }
         " style="display: none;">Test</button>
       </div>
     </div>
@@ -92,7 +133,7 @@ Notifications:
     </div>
   </div>
 
-  <small style="position: absolute; bottom: 7px; left: 0; width: 100%;">Author patricio.pitaluga@gmail.com. Photo by Shannon Kunkle on Unsplash</small>
+  <footer>Author patricio.pitaluga@gmail.com. Photo by Shannon Kunkle on Unsplash</footer>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/script.js"></script>

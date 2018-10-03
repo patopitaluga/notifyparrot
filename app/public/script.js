@@ -23,27 +23,13 @@ if (serverUrl.indexOf(':') > -1) {
   serverUrl = serverUrl.substr(0, serverUrl.indexOf(':'));
 }
 
-var token = '';
-function generateNotif() {
-  document.body.classList.remove('body--untouched');
+var updateScriptTextarea = function(message, lang, expiresIn) {
+  if (typeof message === 'undefined') throw('Missing message property');
+  if (typeof lang === 'undefined') throw('Missing lang property');
+  if (typeof expiresIn === 'undefined') throw('Missing expiresIn property');
 
-  document.getElementById('generate-notif').classList.remove('generate-notif--hidden');
-  document.getElementById('message-input').focus();
+  if (message === '') message = 'Hello, this is your message.';
 
-  updateScriptTextarea('Hello, this is your message.', 'en-US');
-
-  var xhrGetJWT = new XMLHttpRequest();
-  xhrGetJWT.open('POST', '/getjwt', true);
-  xhrGetJWT.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-  xhrGetJWT.onload = function() {
-    var jsonResponse = JSON.parse(xhrGetJWT.response);
-    token = jsonResponse.token;
-    document.getElementById('token').value = token;
-  };
-  xhrGetJWT.send();
-}
-
-var updateScriptTextarea = function(message, lang) {
   document.getElementById('codeNode').value =
 'const http = require(\'http\');\n' +
 'const querystring = require(\'querystring\');\n' +
@@ -62,7 +48,7 @@ var updateScriptTextarea = function(message, lang) {
 '  method: \'POST\',\n' +
 '  headers: {\n' +
 '    \'Content-Type\': \'application/x-www-form-urlencoded\',\n' +
-'    \'Authorization\': \'Bearer ' + token + '\'\n' +
+'    \'Authorization\': \'Bearer ' + token + '\' // Expires in ' + expiresIn + '.\n' +
 '  }\n' +
 '}, function (res) {\n' +
 '  console.log(\'NotifyParrot: \' + message);\n' +
@@ -74,3 +60,24 @@ var updateScriptTextarea = function(message, lang) {
 'req.write(postData);\n' +
 'req.end();\n';
 }
+
+var token = '';
+function getNewToken(expiresIn) {
+  var xhrGetJWT = new XMLHttpRequest();
+  xhrGetJWT.open('POST', '/getjwt', true);
+  xhrGetJWT.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhrGetJWT.onload = function() {
+    var jsonResponse = JSON.parse(xhrGetJWT.response);
+    token = jsonResponse.token;
+    document.getElementById('token').value = token;
+
+    updateScriptTextarea(
+      document.getElementById('message-input').value,
+      document.getElementById('lang').value,
+      document.getElementById('expiresInSelect').value
+    );
+  };
+  xhrGetJWT.send('expiresIn=' + expiresIn);
+}
+getNewToken('1 year');
+updateScriptTextarea('', 'en-US', '1 year');

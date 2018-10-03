@@ -27,7 +27,7 @@ module.exports = (req, res) => {
   '  method: \'POST\',\n' +
   '  headers: {\n' +
   '    \'Content-Type\': \'application/x-www-form-urlencoded\',\n' +
-  '    \'Authorization\': \'Bearer ' + req.query.jwt + '\'\n' +
+  '    \'Authorization\': \'Bearer ' + req.query.jwt + '\' // Expires in ' + req.query.expiresIn + '.\n' +
   '  }\n' +
   '}, function (res) {\n' +
   '  console.log(\'NotifyParrot: ' + req.query.message + '\');\n' +

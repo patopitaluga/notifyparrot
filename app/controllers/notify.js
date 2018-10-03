@@ -31,7 +31,9 @@ module.exports = (req, res) => {
       if (fs.existsSync('app/public/audios/' + audiofile)) {
         req.app.get('io')
           .sockets.emit('notify', { audiofile: audiofile, message: req.body.message });
-        res.send('1');
+        res.json({
+          message: 'Notification played.'
+        });
         return;
       }
 
@@ -41,7 +43,14 @@ module.exports = (req, res) => {
           // voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
           audioConfig: { audioEncoding: 'MP3' },
         }, (err, response) => {
-        if (err) { console.error('ERROR:', err); return; }
+        if (err) {
+          console.error('Can\'t access Google Cloud services.');
+          // console.error('ERROR:', err);
+          res.status(503).json({
+            message: 'Can\'t access Google Cloud services.'
+          });
+          return;
+        }
 
         fs.writeFile('app/public/audios/' + audiofile, response.audioContent, 'binary', err => {
           if (err) { console.error('ERROR:', err); return; }
@@ -50,7 +59,10 @@ module.exports = (req, res) => {
 
           req.app.get('io')
             .sockets.emit('notify', { audiofile: audiofile, message: req.body.message });
-          res.send('1');
+
+          res.json({
+            message: 'Notified.'
+          });
         });
       });
     }
