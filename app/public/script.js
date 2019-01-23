@@ -59,6 +59,8 @@ var updateScriptTextarea = function(message, lang, expiresIn) {
 '\n' +
 'req.write(postData);\n' +
 'req.end();\n';
+
+  document.getElementById('codeCurl').value = 'curl -H "Authorization: Bearer ' + token + '" -d "message=' + message + '" -X POST ' + serverUrl + ':' + serverPort + '/notify'
 }
 
 var token = '';

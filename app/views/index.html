@@ -41,7 +41,9 @@
   <div id="generate-notif" class="generate-notif generate-notif--hidden">
     <div class="container" style="background: #fff; padding: 16px 15px;">
       <div style="text-align: right;">
-        <button style="background: transparent; border: 0; color: #7fb959; cursor: pointer; width: 40px; height: 40px; line-height: 40px;text-align: center;margin: -15px -15px 0 0;">X</button>
+        <button onclick="
+          document.getElementsByClassName('generate-notif')[0].classList.add('generate-notif--hidden');
+          " style="background: transparent; border: 0; color: #7fb959; cursor: pointer; width: 40px; height: 40px; line-height: 40px;text-align: center;margin: -15px -15px 0 0;">X</button>
       </div>
       <table style="border-collapse: collapse; width: 100%;">
         <tr>
@@ -94,8 +96,16 @@
           <td colspan="2" style="width: 1%; padding: 5px 10px 5px 0;">Code: (Node)</td>
         </tr>
         <tr>
-          <td colspan="2" style="padding: 15px 0 0;overflow: hidden;">
-            <textarea id="codeNode" style="width: 100%; height: 80px;" onClick="this.select();" readonly="readonly"></textarea>
+          <td colspan="2" style="padding: 5px 0 0;overflow: hidden;">
+            <textarea id="codeNode" style="width: 100%; height: 100px;" onClick="this.select();" readonly="readonly"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="width: 1%; padding: 5px 10px 5px 0;">Curl: (Terminal command)</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding: 5px 0 0;overflow: hidden;">
+            <input type="text" id="codeCurl" onClick="this.select();" readonly="readonly" style="width: 100%;"/>
           </td>
         </tr>
       </table>

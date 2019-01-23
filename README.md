@@ -15,6 +15,11 @@ Receive voice messages in real time in your browser when your web deploy process
   ```
 * Copy your Text-to-speech Google Cloud service account key json file into the *creds* folder.
 
+* Install npm dependencies
+  ```
+  npm install
+  ```
+
 * Set the configuration
   ```
   npm run setup
