@@ -4,6 +4,7 @@
   "description": "Web server that turns POST request into spoken voice notifications.",
   "main": "app/server.js",
   "scripts": {
+    "build": "node buildjson.js",
     "setup": "node app/setup.js",
     "start": "node app/server.js"
   },
