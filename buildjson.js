@@ -6,7 +6,7 @@ fs.writeFileSync('creds/google-app-creds.json', JSON.stringify(
     'type': process.env.GOOGLECREDS_TYPE,
     'project_id': process.env.GOOGLECREDS_PROJECTID,
     'private_key_id': process.env.GOOGLECREDS_KEYID,
-    'private_key': process.env.GOOGLECREDS_KEY + '\n',
+    'private_key': process.env.GOOGLECREDS_KEY.trim().replace(/\\n/g, '\n') + '\n',
     'client_email': process.env.GOOGLECREDS_CLIENTEMAIL,
     'client_id': process.env.GOOGLECREDS_CLIENTID,
     'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
